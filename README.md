@@ -1,68 +1,80 @@
-# Kokoro TTS CLI
+# ktts-cli
 
-**Kokoro TTS CLI** is a command-line tool for generating high-quality speech audio files from text using [Kokoro TTS](https://github.com/hexgrad/kokoro). It supports flexible input methods, multiple voices, languages, and batch processing, and runs locally on your machine.
+**ktts-cli** is a command-line interface for generating high-quality speech audio from text using [Kokoro TTS](https://github.com/hexgrad/kokoro). It supports multiple voices, languages, batch processing, and customizable output—all running locally on your machine.
 
 ---
 
 ## Features
 
-- **Text-to-Speech**: Convert text files or direct input to speech audio.
+- **Text-to-Speech**: Convert text or text files to spoken audio.
 - **Multiple Voices & Languages**: Choose from a catalog of voices and languages.
-- **Batch Processing**: Split and process large texts in manageable chunks.
-- **Customizable Output**: Set audio file name, format (mp3/wav), voice, language, and speech speed.
-- **Works Locally**: No cloud or internet required after setup.
+- **Batch Processing**: Split and process large texts in chunks.
+- **Custom Output**: Set output filename, format, voice, language, and speed.
+- **Runs Locally**: No cloud or internet required after setup.
 
 ---
 
 ## Installation
 
-### 1. Clone the Repository
+### **Linux (Ubuntu/Debian)**
+
+Open a terminal and run:
 
 ```bash
-git clone https://github.com/yourusername/ktts-cli.git
-cd ktts-cli
+curl -sSL https://raw.githubusercontent.com/pro402/ktts-cli/main/install.sh | bash
 ```
 
-### 2. Set Up Environment with [uv](https://github.com/astral-sh/uv)
+This script will:
+- Install Python, git, curl, and uv if missing
+- Clone this repository
+- Set up a virtual environment
+- Install all required dependencies (CPU-only PyTorch, Kokoro, etc.)
+- Make `ktts-cli` available globally
 
-```bash
-uv init -p 3.10
-uv add kokoro soundfile pip
+---
+
+### **Windows**
+
+Open **PowerShell as Administrator** and run:
+
+```powershell
+irm https://raw.githubusercontent.com/pro402/ktts-cli/main/install.ps1 | iex
 ```
 
-### 3. Install the CLI in Editable Mode
-
-```bash
-uv pip install -e .
-```
+This script will:
+- Install Python, git, curl, and uv if missing
+- Clone this repository
+- Set up a virtual environment
+- Install all required dependencies (CPU-only PyTorch, Kokoro, etc.)
+- Add `ktts-cli` to your PATH
 
 ---
 
 ## Usage
 
-### Basic Help
+### **Show Help**
 
 ```bash
 ktts-cli --help
 ```
 
-### Example Commands
+### **Examples**
 
-**Convert direct input to audio:**
-```bash
-ktts-cli -a -n greeting.wav -v af_sarah
-# Enter text at the prompt, then press Enter
-```
+- **Direct text input:**
+  ```bash
+  ktts-cli -a -n greeting.wav -v af_sarah
+  # Enter your text when prompted
+  ```
 
-**Convert a text file:**
-```bash
-ktts-cli -o input.txt -n output.mp3 -v am_heroic
-```
+- **Convert a text file:**
+  ```bash
+  ktts-cli -o input.txt -n output.mp3 -v am_heroic
+  ```
 
-**Batch process a large text file (split every 5000 chars):**
-```bash
-ktts-cli -b 5000 -o novel.txt -n chapter_
-```
+- **Batch process a large text file (split every 5000 chars):**
+  ```bash
+  ktts-cli -b 5000 -o novel.txt -n chapter_
+  ```
 
 ---
 
@@ -95,29 +107,58 @@ ktts-cli -b 5000 -o novel.txt -n chapter_
 
 ---
 
-## Output Formats
+## Uninstallation
 
-- Output is saved as `.mp3` or `.wav` depending on the file extension you specify.
+### **Linux**
+
+1. **Remove the global symlink:**
+   ```bash
+   sudo rm /usr/local/bin/ktts-cli
+   ```
+
+2. **Delete the project directory (and virtual environment):**
+   ```bash
+   cd ~
+   rm -rf ktts-cli
+   ```
+
+3. *(Optional)* **Remove uv if you installed it just for this:**
+   ```bash
+   sudo rm /usr/local/bin/uv
+   ```
+
+---
+
+### **Windows**
+
+1. **Remove the project directory:**
+   - Open PowerShell and run:
+     ```powershell
+     Remove-Item -Recurse -Force "$HOME\ktts-cli"
+     ```
+
+2. **Remove the CLI from your PATH:**
+   - Open System Properties > Environment Variables, and remove the `.venv\Scripts` path under User variables for PATH.
+   - Or, run this in PowerShell:
+     ```powershell
+     $venvScripts = "$HOME\ktts-cli\.venv\Scripts"
+     $env:Path = ($env:Path -split ';' | Where-Object { $_ -ne $venvScripts }) -join ';'
+     [Environment]::SetEnvironmentVariable("Path", $env:Path, [EnvironmentVariableTarget]::User)
+     ```
+
+3. *(Optional)* **Uninstall uv (if you installed it just for this):**
+   ```powershell
+   Remove-Item -Force -Path "$HOME\.cargo\bin\uv.exe"
+   ```
 
 ---
 
 ## Troubleshooting
 
-- **Large dependencies**: PyTorch and Kokoro require significant disk space and RAM.
-- **No module named pip**: Run `uv pip install pip` to add pip to your environment.
-- **CUDA/GPU errors**: Use CPU-only PyTorch if you do not have a compatible GPU.
-- **Warnings**: Some PyTorch warnings are harmless and can be ignored.
-
----
-
-## Development
-
-- To modify the CLI, edit `main.py` (or your main script).
-- For packaging, adjust `pyproject.toml` as needed.
-- To rebuild after changes:  
-  ```bash
-  uv pip install -e .
-  ```
+- **Permission errors:** Make sure to run PowerShell as Administrator on Windows, and use `sudo` on Linux when needed.
+- **Command not found:** Open a new terminal after installation, or ensure your PATH is updated.
+- **Large dependencies:** PyTorch and Kokoro require significant disk space and RAM.
+- **Other issues:** Open an issue on [GitHub](https://github.com/pro402/ktts-cli/issues).
 
 ---
 
@@ -137,7 +178,3 @@ ktts-cli -b 5000 -o novel.txt -n chapter_
 
 **Happy synthesizing!**  
 For questions or contributions, open an issue or pull request on GitHub.
-
----
-
-Let me know if you want to add Docker usage, more troubleshooting, or anything else!
