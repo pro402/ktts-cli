@@ -1,7 +1,3 @@
-Certainly! Here’s a professional and user-friendly **README.md** for your Kokoro TTS CLI project.
-
----
-
 # Kokoro TTS CLI
 
 **Kokoro TTS CLI** is a command-line tool for generating high-quality speech audio files from text using [Kokoro TTS](https://github.com/hexgrad/kokoro). It supports flexible input methods, multiple voices, languages, and batch processing, and runs locally on your machine.
