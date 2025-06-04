@@ -1,0 +1,17 @@
+# Byte-compiled / optimized files
+*.pyc
+
+# Python cache directories
+__pycache__/
+
+# Virtual environment
+.venv/
+
+# Package metadata
+ktts_cli.egg-info/
+
+# UV lock file (optional, see note above)
+uv.lock
+
+# Test/output audio files
+*.wav
