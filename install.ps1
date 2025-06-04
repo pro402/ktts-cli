@@ -13,7 +13,14 @@ choco install -y python git curl
 Write-Host "==> Checking for uv..."
 if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
     Write-Host "==> Installing uv..."
-    irm https://astral.sh/uv/install.ps1 | iex
+    # Use explicit bypass for UV install
+    powershell -ExecutionPolicy Bypass -Command "irm https://astral.sh/uv/install.ps1 | iex"
+    
+    # Verify UV installation
+    if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
+        Write-Host "!! Error: Failed to install uv. Please install manually and rerun."
+        exit 1
+    }
 }
 
 # Clone or update repo
