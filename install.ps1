@@ -13,13 +13,18 @@ choco install -y python git curl
 Write-Host "==> Checking for uv..."
 if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
     Write-Host "==> Installing uv..."
-    # Use explicit bypass for UV install
     powershell -ExecutionPolicy Bypass -Command "irm https://astral.sh/uv/install.ps1 | iex"
-    
-    # Verify UV installation
     if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
         Write-Host "!! Error: Failed to install uv. Please install manually and rerun."
         exit 1
+    }
+}
+
+# Remove existing broken or partial ktts-cli folder if it exists and is not a git repo
+if (Test-Path "ktts-cli") {
+    if (-not (Test-Path "ktts-cli\.git")) {
+        Write-Host "==> Removing incomplete ktts-cli directory..."
+        Remove-Item -Recurse -Force ktts-cli
     }
 }
 
@@ -32,6 +37,12 @@ if (Test-Path "ktts-cli") {
     Write-Host "==> Cloning ktts-cli repository..."
     git clone https://github.com/pro402/ktts-cli.git
     Set-Location ktts-cli
+}
+
+# Check for pyproject.toml
+if (-not (Test-Path "pyproject.toml")) {
+    Write-Host "!! Error: pyproject.toml not found in ktts-cli directory. Aborting."
+    exit 1
 }
 
 Write-Host "==> Creating virtual environment..."
@@ -55,5 +66,5 @@ if ($oldPath -notlike "*$venvScripts*") {
     Write-Host "==> Added $venvScripts to user PATH."
 }
 
-Write-Host "==> Installation complete! Please open a NEW terminal and run:"
+Write-Host "`n==> Installation complete! Please open a NEW terminal and run:"
 Write-Host "    ktts-cli --help"
